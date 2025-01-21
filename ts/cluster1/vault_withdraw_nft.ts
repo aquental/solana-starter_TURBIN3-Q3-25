@@ -13,7 +13,7 @@ import {
   BN,
 } from "@coral-xyz/anchor";
 import { WbaVault, IDL } from "./programs/wba_vault";
-import wallet from "./wallet/wba-wallet.json";
+import wallet from "../../aquental-wallet.json";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
@@ -55,11 +55,11 @@ const mint = new PublicKey("<address>");
 (async () => {
   try {
     const metadataProgram = new PublicKey(
-      "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s",
+      "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
     );
     const metadataAccount = PublicKey.findProgramAddressSync(
       [Buffer.from("metadata"), metadataProgram.toBuffer(), mint.toBuffer()],
-      metadataProgram,
+      metadataProgram
     )[0];
     const masterEdition = PublicKey.findProgramAddressSync(
       [
@@ -68,7 +68,7 @@ const mint = new PublicKey("<address>");
         mint.toBuffer(),
         Buffer.from("edition"),
       ],
-      metadataProgram,
+      metadataProgram
     )[0];
 
     // Get the token account of the fromWallet address, and if it does not exist, create it
