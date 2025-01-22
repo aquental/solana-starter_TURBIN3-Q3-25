@@ -13,8 +13,7 @@ import {
 import wallet from "../../aquental-wallet.json";
 import base58 from "bs58";
 
-const RPC_ENDPOINT = "https://api.devnet.solana.com";
-const umi = createUmi(RPC_ENDPOINT);
+const umi = createUmi("https://api.devnet.solana.com");
 
 let keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
 const myKeypairSigner = createSignerFromKeypair(umi, keypair);
@@ -23,7 +22,7 @@ umi.use(mplTokenMetadata());
 
 const mint = generateSigner(umi);
 // metadata
-const uri = "https://arweave.net/CKphLzsH3VKd4fvBf6pRyuXAn2TwodYo6MWx1V41YLa6";
+const uri = "https://arweave.net/2t6xFcZ4PphLbpJn52mnyNAnhcPBHkxyeippKjqUDYQo";
 
 (async () => {
   let tx = createNft(umi, {
