@@ -16,7 +16,7 @@ const umi = createUmi("https://api.devnet.solana.com");
 let keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
 const signer = createSignerFromKeypair(umi, keypair);
 
-umi.use(mplTokenMetadata());
+//umi.use(mplTokenMetadata());
 umi.use(
   irysUploader({
     // mainnet address: "https://node1.irys.xyz"
@@ -26,18 +26,22 @@ umi.use(
 );
 umi.use(signerIdentity(signer));
 
+const rug_name = "oriental.png";
+
 (async () => {
   try {
     //1. Load image
-    const file_path = path.join(__dirname, "/rugs/grug.png");
+    const file_path = path.join(__dirname, "/rugs/", rug_name);
     //check if file exists
     if (!file_path) {
       throw new Error("File not found");
+    } else {
+      console.log("File: ", file_path.toString());
     }
     const imageFile = await readFile(file_path);
 
     //2. Convert image to generic file.
-    const umiImageFile = createGenericFile(imageFile, "royal-rug.png", {
+    const umiImageFile = createGenericFile(imageFile, rug_name, {
       tags: [{ name: "Content-Type", value: "image/png" }],
     });
 
@@ -53,3 +57,7 @@ umi.use(signerIdentity(signer));
 })();
 
 //Your image URI:  https://arweave.net/59bsGi7MhRSBquwgZ6MHGuFAGiMnxJfSE1T2mPkcTTYv
+//Your image URI:  https://arweave.net/GG2LutKvSyvkpe3DdVryeVBF3viXfwtih2Vkz1jVXRYe
+//Your image URI:  https://arweave.net/CkxW5VRvv2SUELtZ2Fr5BX4V6sFDVojTjojGgTDuo81y
+//Your image URI:  https://arweave.net/63PTU8Ay8yZmTRwbYiDefPrTVJejmSSrcJCBHWTK5SR9
+//Your image URI:  https://arweave.net/8qWf1Hu1VwpBtW1enDw5CTfNEFiX2YYEKStb99Sww37a
