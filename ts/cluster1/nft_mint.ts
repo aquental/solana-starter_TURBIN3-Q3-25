@@ -22,7 +22,8 @@ umi.use(mplTokenMetadata());
 
 const mint = generateSigner(umi);
 // metadata
-const uri = "https://arweave.net/2t6xFcZ4PphLbpJn52mnyNAnhcPBHkxyeippKjqUDYQo";
+const uri =
+  "https://gateway.irys.xyz/9dw2bELBvmvTcyEKQg4AEgMfsY6YB82podE8U1Md4ESH";
 
 (async () => {
   let tx = createNft(umi, {
@@ -41,5 +42,5 @@ const uri = "https://arweave.net/2t6xFcZ4PphLbpJn52mnyNAnhcPBHkxyeippKjqUDYQo";
 })();
 
 // Succesfully Minted! Check out your TX here:
-// https://explorer.solana.com/tx/4FUFvR7bubWhf3rjqf98Kk7Pti8yLKucPGg97G78bGZuRfbJTDJAvstJcxJY7CcNG7RJLMgaNsaHPpYFMaVB8mdr?cluster=devnet
-// Mint Address:  8GAJrz1fgHBcJyhMYYWY6ujrdwLeGZqjFh74crBd5pTw
+// https://explorer.solana.com/tx/2fC3hvfbXUvE1BCgUiHhmQTXhGbSjrsanqE9eDhNZJ3d8DXrZJLrntJfUiXTvaZAPzMNjdr2LjzsdWQF1cgZUbJH?cluster=devnet
+// Mint Address:  36Yot5KReZRMRwMGxjKTUuUHW7GP3oKQX1ieGsaX1cn1

@@ -24,8 +24,6 @@ const createNft = async () => {
     .use(mplTokenMetadata())
     .use(
       irysUploader({
-        // mainnet address: "https://node1.irys.xyz"
-        // devnet address: "https://devnet.irys.xyz"
         address: "https://devnet.irys.xyz",
       })
     );
@@ -37,14 +35,14 @@ const createNft = async () => {
 
   // use `fs` to read file via a string path.
   // You will need to understand the concept of pathing from a computing perspective.
-
-  const imageFile = fs.readFileSync(path.join(__dirname, "/rugs/rug.png"));
+  const rug_name = "dragon.png";
+  const imageFile = fs.readFileSync(path.join(__dirname, "/rugs/", rug_name));
 
   // Use `createGenericFile` to transform the file into a `GenericFile` type
   // that umi can understand. Make sure you set the mimi tag type correctly
   // otherwise Arweave will not know how to display your image.
 
-  const umiImageFile = createGenericFile(imageFile, "rug.png", {
+  const umiImageFile = createGenericFile(imageFile, rug_name, {
     tags: [{ name: "Content-Type", value: "image/png" }],
   });
 
@@ -63,14 +61,14 @@ const createNft = async () => {
   //
 
   const metadata = {
-    name: "Oriental Fancy Rug",
-    description: "A beautiful oriental themed rug",
+    name: "Royal Fancy Rug",
+    description: "A beautiful royal themed rug",
     image: imageUri[0],
     external_url: "https://example.com",
     attributes: [
       {
-        trait_type: "trait1",
-        value: "value1",
+        trait_type: "creator",
+        value: "CoPilot",
       },
       {
         trait_type: "trait2",
@@ -100,6 +98,9 @@ const createNft = async () => {
 
   // We generate a signer for the Nft
   const nftSigner = generateSigner(umi);
+
+  // Decide on a price for the Nft.
+  const price = sol(0.01);
 
   // Decide on a ruleset for the Nft.
   // Metaplex ruleset - publicKey("eBJLFYPxJmMGKuFwpDWkzxZeUrad92kZRC5BJLpzyT9")

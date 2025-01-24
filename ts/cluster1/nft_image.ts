@@ -19,8 +19,6 @@ const signer = createSignerFromKeypair(umi, keypair);
 //umi.use(mplTokenMetadata());
 umi.use(
   irysUploader({
-    // mainnet address: "https://node1.irys.xyz"
-    // devnet address: "https://devnet.irys.xyz"
     address: "https://devnet.irys.xyz",
   })
 );
@@ -56,8 +54,4 @@ const rug_name = "oriental.png";
   }
 })();
 
-//Your image URI:  https://arweave.net/59bsGi7MhRSBquwgZ6MHGuFAGiMnxJfSE1T2mPkcTTYv
-//Your image URI:  https://arweave.net/GG2LutKvSyvkpe3DdVryeVBF3viXfwtih2Vkz1jVXRYe
-//Your image URI:  https://arweave.net/CkxW5VRvv2SUELtZ2Fr5BX4V6sFDVojTjojGgTDuo81y
-//Your image URI:  https://arweave.net/63PTU8Ay8yZmTRwbYiDefPrTVJejmSSrcJCBHWTK5SR9
-//Your image URI:  https://arweave.net/8qWf1Hu1VwpBtW1enDw5CTfNEFiX2YYEKStb99Sww37a
+//Your image URI:  https://gateway.irys.xyz/GSYT2mmURM2yyzCgZYStaZa4gjyNidM75Wz5egssrUvc

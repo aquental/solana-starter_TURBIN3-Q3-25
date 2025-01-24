@@ -15,8 +15,6 @@ const signer = createSignerFromKeypair(umi, keypair);
 
 umi.use(
   irysUploader({
-    // mainnet address: "https://node1.irys.xyz"
-    // devnet address: "https://devnet.irys.xyz"
     address: "https://devnet.irys.xyz",
   })
 );
@@ -25,7 +23,7 @@ umi.use(signerIdentity(signer));
 (async () => {
   try {
     const image =
-      "https://arweave.net/BYm8YC8eDc6yhPuGUMyvaKSYcWyYcCJYpCqQ77AVGK55";
+      "https://gateway.irys.xyz/GSYT2mmURM2yyzCgZYStaZa4gjyNidM75Wz5egssrUvc";
     const metadata = {
       name: "Oriental Fancy Rug",
       symbol: "AQ",
@@ -36,7 +34,7 @@ umi.use(signerIdentity(signer));
         files: [
           {
             uri: image,
-            type: "image/jpeg",
+            type: "image/png",
           },
         ],
       },
@@ -50,5 +48,4 @@ umi.use(signerIdentity(signer));
   }
 })();
 
-//Your metadata URI:  https://arweave.net/CKphLzsH3VKd4fvBf6pRyuXAn2TwodYo6MWx1V41YLa6
-//Your metadata URI:  https://arweave.net/2t6xFcZ4PphLbpJn52mnyNAnhcPBHkxyeippKjqUDYQo
+//Your metadata URI:  https://gateway.irys.xyz/9dw2bELBvmvTcyEKQg4AEgMfsY6YB82podE8U1Md4ESH
