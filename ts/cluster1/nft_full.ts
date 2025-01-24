@@ -61,8 +61,8 @@ const createNft = async () => {
   //
 
   const metadata = {
-    name: "Wall Rug",
-    description: "Wall rug",
+    name: "Brazilian Rug",
+    description: "Brazilian themed rug",
     image: imageUri[0],
     external_url: "https://example.com",
     attributes: [
