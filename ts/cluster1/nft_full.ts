@@ -35,7 +35,7 @@ const createNft = async () => {
 
   // use `fs` to read file via a string path.
   // You will need to understand the concept of pathing from a computing perspective.
-  const rug_name = "dragon.png";
+  const rug_name = "wall-rug.jpeg";
   const imageFile = fs.readFileSync(path.join(__dirname, "/rugs/", rug_name));
 
   // Use `createGenericFile` to transform the file into a `GenericFile` type
@@ -43,7 +43,7 @@ const createNft = async () => {
   // otherwise Arweave will not know how to display your image.
 
   const umiImageFile = createGenericFile(imageFile, rug_name, {
-    tags: [{ name: "Content-Type", value: "image/png" }],
+    tags: [{ name: "Content-Type", value: "image/jpeg" }],
   });
 
   // Here we upload the image to Arweave via Irys and we get returned a uri
@@ -61,8 +61,8 @@ const createNft = async () => {
   //
 
   const metadata = {
-    name: "Royal Fancy Rug",
-    description: "A beautiful royal themed rug",
+    name: "Wall Rug",
+    description: "Wall rug",
     image: imageUri[0],
     external_url: "https://example.com",
     attributes: [
@@ -71,15 +71,15 @@ const createNft = async () => {
         value: "CoPilot",
       },
       {
-        trait_type: "trait2",
-        value: "value2",
+        trait_type: "program",
+        value: "turbin3",
       },
     ],
     properties: {
       files: [
         {
           uri: imageUri[0],
-          type: "image/png",
+          type: "image/jpeg",
         },
       ],
       category: "image",
