@@ -16,7 +16,7 @@ import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 import { base58 } from "@metaplex-foundation/umi/serializers";
 import fs from "fs";
 import path from "path";
-import wallet from "../../aquental-wallet.json";
+import wallet from "../turbin3-wallet.json";
 
 const createNft = async () => {
   // Setting Up Umi
@@ -35,7 +35,7 @@ const createNft = async () => {
 
   // use `fs` to read file via a string path.
   // You will need to understand the concept of pathing from a computing perspective.
-  const rug_name = "brazilian.png";
+  const rug_name = "scott-ian.png";
   const imageFile = fs.readFileSync(path.join(__dirname, "/rugs/", rug_name));
 
   // Use `createGenericFile` to transform the file into a `GenericFile` type
@@ -61,18 +61,26 @@ const createNft = async () => {
   //
 
   const metadata = {
-    name: "Brazilian Rug",
-    description: "Brazilian themed rug",
+    name: "Jeff rocker",
+    description: "Jeff themed rug",
     image: imageUri[0],
-    external_url: "https://example.com",
+    external_url: "https://example.com/oriental",
     attributes: [
       {
         trait_type: "creator",
-        value: "CoPilot",
+        value: "aquental",
       },
       {
         trait_type: "program",
         value: "turbin3",
+      },
+      {
+        trait_type: "cohort",
+        value: "Q3",
+      },
+      {
+        trait_type: "year",
+        value: "2025",
       },
     ],
     properties: {

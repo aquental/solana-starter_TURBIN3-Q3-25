@@ -13,7 +13,7 @@ import {
   BN,
 } from "@coral-xyz/anchor";
 import { WbaVault, IDL } from "./programs/wba_vault";
-import wallet from "../../aquental-wallet.json";
+import wallet from "../turbin3-wallet.json";
 import {
   TOKEN_PROGRAM_ID,
   getOrCreateAssociatedTokenAccount,

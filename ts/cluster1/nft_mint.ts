@@ -10,7 +10,7 @@ import {
   mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
 
-import wallet from "../../aquental-wallet.json";
+import wallet from "../turbin3-wallet.json";
 import base58 from "bs58";
 
 const umi = createUmi("https://api.devnet.solana.com");
