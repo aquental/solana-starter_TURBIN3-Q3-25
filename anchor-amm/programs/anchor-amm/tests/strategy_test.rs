@@ -1,5 +1,5 @@
 use anchor_amm::instructions::strategy::{
-    AmmStrategy, ConstantProductStrategy, ConcentratedLiquidityStrategy, HybridCfmmStrategy,
+    AmmStrategy, ConstantProductStrategy, ConcentratedLiquidityStrategy, HybridCfmmStrategy, ConstantMeanStrategy,
 };
 
 #[cfg(test)]
@@ -8,11 +8,20 @@ mod tests {
 
     #[test]
     fn test_strategy_pattern_implementation() {
-        // Test that both strategies implement AmmStrategy correctly
+// Test that all strategies implement AmmStrategy correctly, including Constant Mean
         let amount_in = 100_000;
         let reserve_in = 1_000_000;
         let reserve_out = 1_000_000;
         let fee_bps = 30;
+
+        // Test constant mean strategy
+        let cm_result = ConstantMeanStrategy::calculate_amount_out(
+            amount_in,
+            reserve_in,
+            reserve_out,
+            fee_bps,
+        );
+        assert!(cm_result.is_ok());
 
         // Test constant product strategy
         let cp_result = ConstantProductStrategy::calculate_amount_out(
@@ -35,10 +44,12 @@ mod tests {
         let cp_amount = cp_result.unwrap();
         let cl_amount = cl_result.unwrap();
 
-        // Both should return positive amounts
+        let cm_amount = cm_result.unwrap();
         assert!(cp_amount > 0);
         assert!(cl_amount > 0);
-        
+
+        assert!(cm_amount > 0);
+
         // They should be less than input due to fees and slippage
         assert!(cp_amount < amount_in);
         assert!(cl_amount < amount_in);
@@ -47,6 +58,7 @@ mod tests {
         println!("Amount in: {}", amount_in);
         println!("Constant Product output: {}", cp_amount);
         println!("Concentrated Liquidity output: {}", cl_amount);
+        println!("Constant Mean output: {}", cm_amount);
     }
 
     #[test]
@@ -65,7 +77,13 @@ mod tests {
             amount_b,
         ).unwrap();
 
+        let cm_initial = ConstantMeanStrategy::calculate_initial_lp_supply(
+            amount_a,
+            amount_b,
+        ).unwrap();
+
         assert!(cp_initial > 0);
+        assert!(cm_initial > 0);
         assert!(cl_initial > 0);
 
         // Test LP token minting
@@ -87,9 +105,20 @@ mod tests {
         assert!(cp_mint > 0);
         assert!(cl_mint > 0);
 
+        // Test Constant Mean LP minting
+        let cm_mint = ConstantMeanStrategy::calculate_lp_tokens_to_mint(
+            deposit_amount,
+            reserve_a,
+            cm_initial,
+        ).unwrap();
+
+        assert!(cm_mint > 0);
+
         println!("LP calculations test passed!");
         println!("CP Initial: {}, CL Initial: {}", cp_initial, cl_initial);
         println!("CP Mint: {}, CL Mint: {}", cp_mint, cl_mint);
+        println!("CM Initial: {}", cm_initial);
+        println!("CM Mint: {}", cm_mint);
     }
 
     #[test]
@@ -115,17 +144,27 @@ mod tests {
 
         assert!(cp_withdraw.0 > 0);
         assert!(cp_withdraw.1 > 0);
+        let cm_withdraw = ConstantMeanStrategy::calculate_withdraw_amounts(
+            lp_amount,
+            reserve_a,
+            reserve_b,
+            lp_supply,
+        ).unwrap();
+
         assert!(cl_withdraw.0 > 0);
-        assert!(cl_withdraw.1 > 0);
+        assert!(cm_withdraw.0 > 0);
+        assert!(cm_withdraw.1 > 0);
 
         // Should not exceed reserves
         assert!(cp_withdraw.0 <= reserve_a);
         assert!(cp_withdraw.1 <= reserve_b);
         assert!(cl_withdraw.0 <= reserve_a);
-        assert!(cl_withdraw.1 <= reserve_b);
+        assert!(cm_withdraw.0 <= reserve_a);
+        assert!(cm_withdraw.1 <= reserve_b);
 
         println!("Withdraw calculations test passed!");
         println!("CP Withdraw: ({}, {})", cp_withdraw.0, cp_withdraw.1);
+        println!("CM Withdraw: ({}, {})", cm_withdraw.0, cm_withdraw.1);
         println!("CL Withdraw: ({}, {})", cl_withdraw.0, cl_withdraw.1);
     }
 
@@ -231,10 +270,14 @@ mod tests {
             amount_in, reserve_in, reserve_out, fee_bps,
         ).unwrap();
 
-        // All should return positive amounts
+        let cm_result = ConstantMeanStrategy::calculate_amount_out(
+            amount_in, reserve_in, reserve_out, fee_bps,
+        ).unwrap();
         assert!(cp_result > 0);
         assert!(cl_result > 0);
         assert!(hybrid_result > 0);
+
+        assert!(cm_result > 0);
 
         // All should be less than input due to fees and slippage
         assert!(cp_result < amount_in);
@@ -249,6 +292,7 @@ mod tests {
 
         // They should have different behaviors
         assert!(cp_result != cl_result || cl_result != hybrid_result);
+        println!("Constant Mean output: {}", cm_result);
     }
 
     #[test]
@@ -284,6 +328,87 @@ mod tests {
     }
 
     #[test]
+    fn test_constant_mean_strategy() {
+        // Test that constant mean strategy implements AmmStrategy correctly
+        let amount_in = 100_000;
+        let reserve_in = 1_000_000;
+        let reserve_out = 1_000_000;
+        let fee_bps = 30;
+
+        // Test constant mean strategy
+        let cm_result = ConstantMeanStrategy::calculate_amount_out(
+            amount_in,
+            reserve_in,
+            reserve_out,
+            fee_bps,
+        );
+        assert!(cm_result.is_ok());
+
+        let cm_amount = cm_result.unwrap();
+        assert!(cm_amount > 0);
+        assert!(cm_amount < amount_in); // Should be less than input due to fees and slippage
+
+        println!("Constant Mean strategy test passed!");
+        println!("Amount in: {}", amount_in);
+        println!("Constant Mean output: {}", cm_amount);
+    }
+
+    #[test]
+    fn test_constant_mean_lp_calculations() {
+        let amount_a = 100_000;
+        let amount_b = 100_000;
+
+        // Test initial LP supply
+        let cm_initial = ConstantMeanStrategy::calculate_initial_lp_supply(
+            amount_a,
+            amount_b,
+        ).unwrap();
+
+        assert!(cm_initial > 0);
+
+        // Test LP token minting
+        let reserve_a = 100_000;
+        let deposit_amount = 50_000;
+
+        let cm_mint = ConstantMeanStrategy::calculate_lp_tokens_to_mint(
+            deposit_amount,
+            reserve_a,
+            cm_initial,
+        ).unwrap();
+
+        assert!(cm_mint > 0);
+
+        println!("Constant Mean LP calculations test passed!");
+        println!("CM Initial: {}", cm_initial);
+        println!("CM Mint: {}", cm_mint);
+    }
+
+    #[test]
+    fn test_constant_mean_withdraw_calculations() {
+        let lp_amount = 25_000;
+        let reserve_a = 100_000;
+        let reserve_b = 100_000;
+        let lp_supply = 100_000;
+
+        let cm_withdraw = ConstantMeanStrategy::calculate_withdraw_amounts(
+            lp_amount,
+            reserve_a,
+            reserve_b,
+            lp_supply,
+        ).unwrap();
+
+        assert!(cm_withdraw.0 > 0);
+        assert!(cm_withdraw.1 > 0);
+
+        // Should not exceed reserves
+        assert!(cm_withdraw.0 <= reserve_a);
+        assert!(cm_withdraw.1 <= reserve_b);
+
+        println!("Constant Mean withdraw calculations test passed!");
+        println!("CM Withdraw: ({}, {})", cm_withdraw.0, cm_withdraw.1);
+    }
+
+    #[test]
     fn test_all_strategies_lp_supply_comparison() {
         // Test that all strategies calculate LP supply correctly
         let amount_a = 100_000;
@@ -310,5 +435,12 @@ mod tests {
         println!("CP Supply: {}", cp_supply);
         println!("CL Supply: {}", cl_supply);
         println!("Hybrid Supply: {}", hybrid_supply);
+        let cm_supply = ConstantMeanStrategy::calculate_initial_lp_supply(
+            amount_a, amount_b,
+        ).unwrap();
+
+        assert!(cm_supply > 0);
+
+        println!("Constant Mean Supply: {}", cm_supply);
     }
 }

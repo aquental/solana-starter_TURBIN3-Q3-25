@@ -10,24 +10,21 @@
 
 ## AMM Functionality
 
-- Constant product formula: Working correctly (x \* y = k)
-- Fee mechanism: 0.3% fee properly deducted from swaps
-- Slippage protection: Prevents unfavorable trades
-- Liquidity management: Deposit/withdraw functions correctly
-- Token security: All token transfers and authorities working properly
+- Using _Strategy Pattern_ for each AMM formula
+- [more here](./programs/anchor-amm/src/instructions/strategy/README.md)
 
 ## Common Invariants
 
-| Name (curve)                            | Formula(s)                                                       | Key Properties                                                              | Live Examples                                                |
-| --------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| **Constant-Sum**                        | `x + y = k`                                                      | 1:1 price fixed; can be depleted; no slippage                               | Very early Balancer “stable” pools, some wrapped-asset pairs |
-| **Constant-Mean (Balancer)**            | `∏ (x_i / w_i) = k`                                              | Generalized multi-token constant product; weights ≠ 1                       | Balancer v1, Beethoven-x                                     |
-| **Stable-Swap (Curve)**                 | `A · nⁿ · Σx_i + D = A · D · nⁿ + Dⁿ⁺¹ / (nⁿ · ∏x_i)`            | Flat in the middle (low slippage for like-priced assets), steep at extremes | Curve, Saber (Solana)                                        |
-| **Concentrated Liquidity (Uniswap v3)** | `x · y = k` but **only inside chosen price bands**               | Liquidity can be supplied to tiny ranges → capital efficiency ↑ 4000×       | Uniswap v3, Orca Whirlpools                                  |
-| **Hybrid CFMM**                         | Piece-wise: constant-sum near peg, constant-product far from peg | Handles both stability and de-pegging                                       | Curve v2, Platypus                                           |
-| **Dynamic-Fee / Logarithmic**           | `k = f(x, y, t)`                                                 | Fees change with volatility or imbalance                                    | DODO v2, Clipper                                             |
-| **Oracle-Weighted / Pegged**            | Uses external price feeds to shift the curve                     | Reduces impermanent loss but introduces oracle risk                         | Bancor v2, Thorchain                                         |
-| **Single-Sided (Virtual Math)**         | virtual balances allow one-sided deposits                        | SushiSwap Trident, KyberDMM                                                 |                                                              |
+| Name (curve)                                                                                                         | Formula(s)                                                       | Key Properties                                                              | Live Examples                                                |
+| -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| **[Constant-Sum](./programs/anchor-amm/src/instructions/strategy/constant_product.rs)**                              | `x + y = k`                                                      | 1:1 price fixed; can be depleted; no slippage                               | Very early Balancer “stable” pools, some wrapped-asset pairs |
+| **[Constant-Mean (Balancer)](./programs/anchor-amm/src/instructions/strategy/constant_mean.rs)**                     | `∏ (x_i / w_i) = k`                                              | Generalized multi-token constant product; weights ≠ 1                       | Balancer v1, Beethoven-x                                     |
+| **[Stable-Swap (Curve)](./programs/anchor-amm/src/instructions/strategy/stable_swap.rs)**                            | `A · nⁿ · Σx_i + D = A · D · nⁿ + Dⁿ⁺¹ / (nⁿ · ∏x_i)`            | Flat in the middle (low slippage for like-priced assets), steep at extremes | Curve, Saber (Solana)                                        |
+| **[Concentrated Liquidity (Uniswap v3)](./programs/anchor-amm/src/instructions/strategy/concentrated_liquidity.rs)** | `x · y = k` but **only inside chosen price bands**               | Liquidity can be supplied to tiny ranges → capital efficiency ↑ 4000×       | Uniswap v3, Orca Whirlpools                                  |
+| **[Hybrid CFMM](./programs/anchor-amm/src/instructions/strategy/hybrid_cfmm.rs)**                                    | Piece-wise: constant-sum near peg, constant-product far from peg | Handles both stability and de-pegging                                       | Curve v2, Platypus                                           |
+| **Dynamic-Fee / Logarithmic**                                                                                        | `k = f(x, y, t)`                                                 | Fees change with volatility or imbalance                                    | DODO v2, Clipper                                             |
+| **Oracle-Weighted / Pegged**                                                                                         | Uses external price feeds to shift the curve                     | Reduces impermanent loss but introduces oracle risk                         | Bancor v2, Thorchain                                         |
+| **Single-Sided (Virtual Math)**                                                                                      | virtual balances allow one-sided deposits                        | SushiSwap Trident, KyberDMM                                                 |                                                              |
 
 ### Which Formula to pick
 

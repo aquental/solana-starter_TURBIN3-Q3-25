@@ -34,6 +34,12 @@ The Strategy pattern allows the AMM to support multiple trading algorithms by ab
    - Features dynamic parameter adjustment based on market conditions
    - Includes dynamic fee adjustment and gamma parameter control
 
+6. **`ConstantMeanStrategy`** (`constant_mean.rs`)
+   - Implements Balancer V1 style constant mean formula
+   - Supports weighted token pools with customizable ratios
+   - Features spot price calculation and weighted product invariant
+   - Provides capital efficiency for non-50/50 token pairs
+
 ## Interface Methods
 
 ### `calculate_amount_out()`
@@ -196,6 +202,42 @@ pub struct HybridParams {
 - Pairs requiring adaptive strategies
 - Professional market making
 
+### Constant Mean Strategy
+
+**Formula**: `∏(Ri^Wi) = K` (weighted product invariant)
+
+**Key Features:**
+- **Weighted Pools**: Supports arbitrary weight ratios (e.g., 80/20, 60/40)
+- **Spot Price Calculation**: Price = (Rb/Wb) / (Ra/Wa)
+- **Capital Efficiency**: Better for non-50/50 pools than constant product
+- **Lower Slippage**: Reduced price impact for weighted assets
+
+**Core Components:**
+
+```rust
+pub struct ConstantMeanStrategy {
+    pub weight_a: u64,  // Weight for token A (e.g., 500000 for 50%)
+    pub weight_b: u64,  // Weight for token B (e.g., 500000 for 50%)
+}
+```
+
+**Mathematical Properties:**
+- **Invariant**: Weighted product of reserves raised to their weights
+- **Spot Price**: `price = (reserve_b * weight_a) / (reserve_a * weight_b)`
+- **LP Supply**: Weighted average of token contributions
+- **For 50/50 pools**: Behaves identically to constant product
+
+**Weight Examples:**
+- 50/50 Pool: weight_a = 500000, weight_b = 500000
+- 80/20 Pool: weight_a = 800000, weight_b = 200000
+- 60/40 Pool: weight_a = 600000, weight_b = 400000
+
+**Use Cases:**
+- Multi-asset portfolios
+- Index fund tokens
+- Governance token/stablecoin pairs
+- Risk-adjusted liquidity provision
+
 ## Strategy Comparison
 
 | Strategy | Best For | Slippage | LP Calculation | Capital Efficiency |
@@ -204,6 +246,7 @@ pub struct HybridParams {
 | Stable Swap | Stablecoins/pegged assets | Low | Sum of amounts | High for stable pairs |
 | Concentrated Liquidity | Active management | Variable by range | Liquidity-based | Up to 4000x |
 | Hybrid CFMM | Adaptive pairs | Dynamic | Invariant-based | High with flexibility |
+| Constant Mean | Weighted pools | Medium | Weighted average | High for weighted pairs |
 
 ## Performance Comparison
 
@@ -215,6 +258,7 @@ Based on test results for 100k input with 1M/1M reserves:
 | Stable Swap | ~99,000 | ~109% | Stable pairs |
 | Concentrated Liquidity | 9,871 | Variable | Narrow ranges |
 | Hybrid CFMM | 95,180 | ~105% | Adaptive trading |
+| Constant Mean | ~90,661 | ~100% (50/50) | Weighted pools |
 
 ## Testing
 

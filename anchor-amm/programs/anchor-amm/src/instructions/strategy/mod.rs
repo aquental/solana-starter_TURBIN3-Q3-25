@@ -5,11 +5,13 @@ pub mod constant_product;
 pub mod stable_swap;
 pub mod concentrated_liquidity;
 pub mod hybrid_cfmm;
+pub mod constant_mean;
 
-pub use constant_product::*;
-pub use stable_swap::*;
-pub use concentrated_liquidity::*;
-pub use hybrid_cfmm::*;
+pub use constant_product::ConstantProductStrategy;
+pub use stable_swap::StableSwapStrategy;
+pub use concentrated_liquidity::ConcentratedLiquidityStrategy;
+pub use hybrid_cfmm::HybridCfmmStrategy;
+pub use constant_mean::ConstantMeanStrategy;
 
 /// Trait defining the interface for AMM strategies
 pub trait AmmStrategy {
