@@ -32,11 +32,14 @@ pub struct Withdraw<'info> {
 
 pub fn handler(ctx: Context<Withdraw>, lp_amount: u64) -> Result<()> {
     let pool = &mut ctx.accounts.pool;
-    let lp_supply = pool.lp_supply;
-    let share = lp_amount as u128 * 1_000_000 / lp_supply as u128;
-
-    let out_a = (pool.reserve_a as u128 * share / 1_000_000) as u64;
-    let out_b = (pool.reserve_b as u128 * share / 1_000_000) as u64;
+    
+    // Use strategy to calculate withdraw amounts
+    let (out_a, out_b) = ConstantProductStrategy::calculate_withdraw_amounts(
+        lp_amount,
+        pool.reserve_a,
+        pool.reserve_b,
+        pool.lp_supply,
+    )?;
 
     // Burn LP tokens
     let seeds = &[

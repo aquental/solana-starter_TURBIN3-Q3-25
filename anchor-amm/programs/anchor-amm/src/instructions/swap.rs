@@ -33,10 +33,13 @@ pub fn handler(ctx: Context<Swap>, amount_in: u64, min_amount_out: u64) -> Resul
         (pool.reserve_b, pool.reserve_a)
     };
 
-    let amount_in_with_fee = amount_in * (10_000 - pool.fee) / 10_000;
-    let numerator = amount_in_with_fee as u128 * reserve_out as u128;
-    let denominator = reserve_in as u128 + amount_in_with_fee as u128;
-    let amount_out = (numerator / denominator) as u64;
+    // Use strategy to calculate swap output
+    let amount_out = ConstantProductStrategy::calculate_amount_out(
+        amount_in,
+        reserve_in,
+        reserve_out,
+        pool.fee,
+    )?;
 
     require!(amount_out >= min_amount_out, AmmError::SlippageExceeded);
 

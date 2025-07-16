@@ -36,12 +36,21 @@ pub fn handler(ctx: Context<Deposit>, max_a: u64, max_b: u64) -> Result<()> {
     let reserve_b = pool.reserve_b;
 
     let (amount_a, amount_b, lp_mint_amount) = if reserve_a == 0 && reserve_b == 0 {
-        // First deposit
-        (max_a, max_b, (max_a as u128 * max_b as u128).isqrt() as u64)
+        // First deposit - use strategy to calculate initial LP supply
+        let lp_supply = ConstantProductStrategy::calculate_initial_lp_supply(max_a, max_b)?;
+        (max_a, max_b, lp_supply)
     } else {
+        // Calculate proportional amounts
         let amount_a = max_a.min(reserve_a * max_b / reserve_b);
         let amount_b = max_b.min(reserve_b * max_a / reserve_a);
-        let lp_mint_amount = (amount_a as u128 * pool.lp_supply as u128 / reserve_a as u128) as u64;
+        
+        // Use strategy to calculate LP tokens to mint
+        let lp_mint_amount = ConstantProductStrategy::calculate_lp_tokens_to_mint(
+            amount_a,
+            reserve_a,
+            pool.lp_supply,
+        )?;
+        
         (amount_a, amount_b, lp_mint_amount)
     };
 

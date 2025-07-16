@@ -47,6 +47,6 @@
 [Stable Swap AMM](https://www.cyfrin.io/glossary/stable-swap-amm-solidity-code-example)  
 [How Concentrated Liquidity in Uniswap V3 Works](https://rareskills.io/post/uniswap-v3-concentrated-liquidity)  
 [Key formulas](https://theammbook.org/formulas/stableswap/)  
-[Uniswap V2 Book](https://rareskills.io/uniswap-v2-book)   
-[Constant Product Automated Market Maker](https://medium.com/@tomarpari90/constant-product-automated-market-maker-everything-you-need-to-know-5bfeb0251ef2)   
-
+[Uniswap V2 Book](https://rareskills.io/uniswap-v2-book)  
+[Constant Product Automated Market Maker](https://medium.com/@tomarpari90/constant-product-automated-market-maker-everything-you-need-to-know-5bfeb0251ef2)  
+[Uniswap V3 Concentrated Liquidity](https://medium.com/@chaisomsri96/defi-math-uniswap-v3-concentrated-liquidity-bd87686b3ecf)
